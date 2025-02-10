@@ -1,0 +1,58 @@
+{% extends "base_menu.html" %}
+{% block title %} User Login {% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block navbar_page %} 
+
+<div class="col text-center">
+<h2>Log in</h2>
+{% if next %}
+  {% if not user.is_authenticated %}
+    {% if not request.clicked %}
+    <p class="alert alert-warning">Please login to see this page.</p> 
+    {% endif %}
+
+  {% else %}
+    <p>Your account doesn't have access to this page. To proceed,
+      please login with an account that has access.</p>
+  {% endif %}
+{% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+
+
+ 
+<div class="row justify-content-sm-center">
+  <div class="col-sm-10 col-md-8 col-lg-6 bg-info-subtle rounded-5 p-4 mb-2 me-2 text-primary"> 
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" class="btn btn-primary" value="Login" />
+    <input type="hidden" name="next" value="{{ next }}" />
+    <a href="{{ next }}" class="btn btn-primary">Cancel</a>
+  </form>
+</div>
+</div>
+
+<div class="row justify-content-sm-center">
+  <div class="col-sm-10 col-md-8 col-lg-6 bg-info-subtle rounded-5 p-4 mb-2 me-2 text-primary"> 
+    <p>If you do not have an account yet, you can register here.</p>
+    <a href="{% url 'home:register' %}" class="btn btn-primary p-2">Register</a>
+  </div>
+</div>    
+
+<div class="row justify-content-sm-center">
+  <div class="col-sm-10 col-md-8 col-lg-6 bg-info-subtle rounded-5 p-4 mb-2 me-2 text-primary"> 
+    <p>If you want to close your account, please click the button below.</p>
+
+    <form action="{% url 'home:deregister' %}" method="get">
+        {% csrf_token %}
+        <button class="btn btn-primary">Delete Account</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

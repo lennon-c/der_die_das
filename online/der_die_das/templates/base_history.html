@@ -1,0 +1,54 @@
+{% extends "base_menu.html" %}
+{% block title %} History {% endblock %}
+{% load render_table from django_tables2 %}
+ 
+{% block navbar_page %} 
+       
+<!-- by words button  -->
+<div class="col-auto ">
+    <a class="btn btn-outline-primary border-0 rounded-0 text-nowrap text-center"  href="{% url 'der_die_das:history' %}?detail=words">
+    <i class="bi bi-card-checklist d-block" style="font-size: 1.3rem;"></i>
+    By words
+    </a>
+</div>
+
+
+<!-- Title  -->
+<div class="col text-center align-self-center">
+        <h5 class="text-primary text-primary  ">
+            History for <strong>{{request.user.username|title}}</strong>
+        </h5>
+</div>
+<!-- trash button  -->
+<div class="col-auto text-end">
+    <a class="btn btn-outline-primary border-0 rounded-0 text-nowrap text-center" data-bs-toggle="collapse" href="#panel-history" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <i class="bi bi-trash3-fill d-block" style="font-size: 1.25rem;"></i>
+        Delete History    
+    </a>
+</div>
+<!-- hidden panel  -->
+<div class="collapse" id="panel-history">
+    <div class="row justify-content-end">
+        <div class="col-sm-5">
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Just to double check!</h4>
+                <p>This will delete your history permanently.</p>
+                <p>Click the button below to delete your history.</p>
+                <form action="{% url 'der_die_das:delete_history'%}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <!-- <i class="fa fa-trash-can"></i> -->
+                        Delete History   
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+

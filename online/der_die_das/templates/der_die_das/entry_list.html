@@ -1,0 +1,158 @@
+<!-- https://www.w3schools.com/bootstrap5/bootstrap_navs.php -->
+{% extends "base_menu.html" %}
+{% load render_table from django_tables2 %}
+{% block title %} Entry list {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block navbar_page %} 
+<div class="col-12">
+  <!-- filters -->
+  <div class="row  me-auto justify-content-start">
+    <div class="col-auto">
+      <a class="btn btn-outline-primary border-0 rounded-0 text-nowrap text-center" data-bs-toggle="collapse" href="#panel-lists" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <i class="bi-sliders  d-block" style="font-size: 1.25rem;"></i>
+          Filters
+      </a>
+      <a class="btn btn-outline-primary border-0 rounded-0 text-nowrap text-center" data-bs-toggle="collapse" href="#info_filters" role="button" aria-expanded="false" aria-controls="collapseExample">
+          <i class="bi bi-info-circle d-block" style="font-size: 1.25rem;"></i>
+          Info
+      </a>
+    </div>
+    <div class="col-auto">
+      {% for filter, value in filters.items %}
+      <strong>{{filter}}</strong>: {{value}} <br>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- hidden form -->
+  <div class="collapse" id="panel-lists">
+      <div class="col-sm-9 col-md-8 col-lg-6 col-xl-5"> 
+        {% crispy form %}
+      </div>
+  </div>
+  <div class="collapse" id="info_filters">
+    <div class="col-sm-10 col-md-8 col-lg-6 bg-info-subtle rounded-5 p-4 mb-2 me-2 text-primary"> 
+      <p class="fs-3 text-danger">Filters</p>
+      <h4>Search for a Word</h4>
+      <p>You can search for a specific word or use the wildcard 
+        <span class="badge text-bg-light">*</span>
+        to find words that start, end, or contain a certain text. If you leave the search field empty, all words will be retrieved. Here some examples.</p>
+
+      <p> To search for...</p>
+      <ul>
+          <li>
+            the word <strong>Haus</strong>, type 
+            <span class="badge text-bg-light">Haus</span>
+          </li> 
+          <li>
+            all words <span class="fw-bold text-danger">starting</span> with <strong>Ge</strong>, type 
+            <span class="badge text-bg-light">Ge*</span>
+          </li>
+          <li>
+            all words <span class="fw-bold text-danger">ending</span> with <strong>e</strong>, type <span class="badge text-bg-light">*e</span> 
+          </li>
+          <li>
+            all words  <span class="fw-bold text-danger">containing</span> 
+            <strong>Haus</strong>, type <span class="badge text-bg-light">*Haus*</span>
+          </li>
+      </ul>
+
+      <h4>Filter by Level</h4>
+      <p>These levels correspond to the German language proficiency stages defined by the <a href="https://www.goethe.de/de/index.html" target="_blank">Goethe-Institut</a>:</p>
+      <ul>
+          <li><strong>A1</strong> (Beginner)</li>
+          <li><strong>A2</strong> (Elementary)</li>
+          <li><strong>B1</strong> (Intermediate)</li>
+      </ul>
+
+      <h4>Filter by Frequency</h4>
+      <p>Limit your search to the most commonly used words by selecting a higher frequency value.</p>
+      <p class="fs-3 text-danger">Columns</p>
+      <p>All data comes from <a href="https://www.dwds.de/" target="_blank">DWDS</a>, an online German dictionary and text corpus.</p>
+      <p>Words with the article <span class="badge text-bg-light">{{ articles.4.1 }}</span> are either used exclusively in the plural form or do not take an article.</p>
+    </div>
+  </div>
+
+  <!-- charts and tables buttons  -->
+  <div class="row bg-info-subtle g-0 align-items-center justify-content-end ">
+    <!-- charts -->
+    <div class="col-auto">
+      <button class="btn btn-outline-primary border-0 rounded-0 {% if what == 'Chart' %}  active  {% endif %}"   type="submit" form="id-entry-list-form" name="what" value="Chart" >
+        <i class="bi bi-pie-chart-fill d-block" style="font-size: 1.25rem;"></i>
+      </button>
+    </div>
+    <!-- Table title -->
+    <div class="col-auto mx-2">
+      Tables
+    </div>
+    <!-- tables -->
+    <div class="col-auto"> 
+      <div class="row g-0">
+      {% for id, label in articles %}
+        <div class="col"> 
+          <button class="btn btn-outline-danger border-0 rounded-0 text-nowrap text-center {% if what == id %}  active  {% endif %}" type="submit" form="id-entry-list-form" name="what" value="{{id}}">
+          {{label}}
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+<!-- Search display -->
+{% if entries_exist  %}
+{% if chart  %}
+<!-- Summary - Chart -->
+<div class="row justify-content-md-center align-items-center">
+ 
+  <!-- first column - chart -->
+  <div id="chart" class="col col-md-4 border rounded-5" style="height:400px; width: 400px;"> 
+  </div>
+  <!-- second column - counts -->
+  <div class="col-4 text-md-start">
+    <!-- counts -->
+    <div class="row row-cols-1">
+      {% for label, count in counts.items %}
+      <div class="col mb-2">
+          <strong>{{label}}</strong>: {{count}} 
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+ 
+ 
+<script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    
+    function drawChart() {
+      // Set Data
+      const summaryData = {{counts_chart|safe}};
+      const data = google.visualization.arrayToDataTable(summaryData);
+      // Set Options
+      const options = {
+        legend: 'none', 
+        pieHole: 0.4,
+        pieSliceText: 'label',  // 'percentage', //
+      };
+      // Draw
+      const chart = new google.visualization.PieChart(document.getElementById('chart'));
+      chart.draw(data, options);
+      };
+</script>
+
+{% else %}
+
+{% render_table data_table  %}
+{% endif %}  <!-- if entries_exist -->
+{% endif %}  <!-- if chart -->
+
+{% endblock %}
+
+ 

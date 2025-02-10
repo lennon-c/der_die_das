@@ -1,0 +1,20 @@
+{% extends "base_menu.html" %}
+{% block title %} Goodbye {% endblock %}  
+
+{% block content %}
+
+<div class="row justify-content-sm-center">
+    <div class="col-sm-10 col-md-8 col-lg-6 bg-info-subtle rounded-5 p-4 mb-2 me-2 text-primary"> 
+        <p class="fs-3">Delete Account: {{ user.username|title }}</p>
+        <p class="lead">We're sorry to see you go.</p>
+        <p>Deleting your account will permanently remove all your data from our system.</p>
+        <p>If you're sure about this decision, please confirm by clicking the button below.</p>
+
+        <form action="{% url 'home:deregister' %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-primary">Delete Account</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

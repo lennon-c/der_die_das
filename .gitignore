@@ -1,0 +1,16 @@
+
+.vscode/
+__pycache__/
+
+# configuration and secrets
+.env
+
+# data, backups
+db.sqlite3
+online.zip
+
+# playground files 
+*/scripts/temp_*
+temp/
+backups/
+ 

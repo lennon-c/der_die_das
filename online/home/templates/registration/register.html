@@ -1,0 +1,20 @@
+{% extends "base_menu.html" %}
+{% block title %} Register {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+ 
+<div class="row justify-content-sm-center">
+    <div class="col-sm-10 col-md-8 col-lg-6 bg-info-subtle rounded-5 p-4 mb-2 me-2 text-primary"> 
+    <h1>Create an Account</h1>
+    <!-- <form class="form-with-validation" action="{% url 'home:register' %}" method="post"> -->
+    <form  action="{% url 'home:register' %}" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-primary">Submit</button>
+    </form>
+</div>
+</div>
+ 
+{% endblock %}

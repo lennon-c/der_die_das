@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "der_die_das"
+version = "0.1.0"
+description = ""
+authors = ["Carolina Lennon <14179052+lennon-c@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+requests = "^2.32.3"
+lxml = "^5.3.0"
+pandas = "^2.2.3"
+django = "^5.1.5"
+django-extensions = "^3.2.3"
+django-crispy-forms = "^2.3"
+crispy-bootstrap5 = "^2024.10"
+django-tables2 = "^2.7.5"
+mysqlclient = "^2.2.7"
+python-decouple = "^3.8"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+pytest = "^8.3.4"
+dwds = { path = "D:/Dropbox/Python/My_packages/dwds",  develop = true }
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

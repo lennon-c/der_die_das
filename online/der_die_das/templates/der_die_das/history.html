@@ -1,0 +1,45 @@
+{% extends "base_history.html" %}
+{% block title %} History {% endblock %}
+{% load render_table from django_tables2 %}
+  
+
+{% block content %}
+
+{% if is_history %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-5">
+        <div class="row  bg-info-subtle rounded-5 p-3 mb-2 me-2"> 
+            <div class="col "> 
+                <h4 class="mb-4">Total</h4>
+                {% render_table total %}  
+            </div>  
+        </div>
+        <div class="row  bg-info-subtle rounded-5  p-2 mb-2 me-2">
+            <div class="col "> 
+                <h4 class="mb-4">By Level</h4>
+                {% render_table by_level %}
+             </div>  
+        </div>
+    </div>
+    <div class="col-lg-5 bg-info-subtle rounded-5 p-4 mb-2 me-2">  
+        <div class="col "> 
+            <h4 class="mb-4">By Day</h4>
+            {% render_table by_day %}
+        </div>  
+    </div>
+</div>
+ 
+
+{% else %}
+
+<div class="row-cols-1">
+    <div class="col bg-info-subtle rounded-5 p-4 mb-2 me-2 text-primary">
+    Currently you have no history, start playing to get some!
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+

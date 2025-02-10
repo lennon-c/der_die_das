@@ -1,0 +1,68 @@
+{% extends "base_menu.html" %}
+{% block title %} Play {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block navbar_page %} 
+
+<!-- Level and History -->
+<div class="col-sm-auto">
+    <!-- Change Level -->
+    <a class="btn btn-outline-primary border-0 rounded-0 text-nowrap text-center" data-bs-toggle="collapse" href="#panel-game" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <i class="bi-sliders  d-block" style="font-size: 1.25rem;"></i>
+        Level    
+    </a>
+    <!-- History -->
+    <a class="btn btn-outline-primary border-0 rounded-0 text-nowrap text-center"  href="{% url 'der_die_das:history' %}">
+        <i class="bi-alarm d-block" style="font-size: 1.25rem;"></i>
+        History
+    </a>
+</div>
+
+<!-- title -->
+<div class="col text-start align-self-center">
+    <p class="text-primary my-auto fs-6">Currently playing level <strong>{{request.session.level_label}}</strong>  </p>
+</div>
+
+<!-- hidden form -->
+<div class="collapse" id="panel-game">
+    <div class="col-md-2   shadow p-3 mb-2 mt-1 rounded-3 bg-warning-subtle">
+    {% crispy form %}
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+
+
+<div class="row justify-content-center "> 
+    <div class="col-sm-10 col-md-8 col-lg-6 ">
+        <div class="row  bg-info-subtle py-5  rounded-top-5"> 
+            <div class="col text-center">
+                <h1 class="text-center">{{lemma}}</h1> 
+            </div>
+        </div>
+        <div class="row bg-info-subtle pb-4 justify-content-center"> 
+            <div class="col  text-center "> 
+                <form  method="post"> 
+                {% csrf_token %}
+                {%for article, answer in answers.items %}
+                    <button type="submit" formaction="{% url 'der_die_das:game' %}"
+                    name="correct" value="{{answer}}" class="btn btn-outline-primary btn-lg rounded-5">
+                        {{article}}
+                    </button>
+                {% endfor %}
+                </form>
+            </div>
+        </div>
+    
+        <div class="row  justify-content-between border  rounded-bottom-5" style="{{request.session.style}};">
+            <div class="col p-2 m-2"> 
+                {{request.session.message|safe}}  {{last_lemma}}
+            </div>
+            <div class="col p-2 m-2 text-end" > 
+                {{request.session.score}} / {{request.session.rounds}}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

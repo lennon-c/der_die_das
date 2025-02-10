@@ -1,0 +1,71 @@
+{% extends "base_menu.html" %}
+{% block title %}{{DerDieDas}}{% endblock %}
+{% load static %}
+
+{% block navbar_page %} 
+<h2 class="text-center">Der Die Das</h2>
+<div class="text-center fs-3 lead ">Exploring and Playing with German Articles</div>
+{% endblock %}
+{% block content %}
+
+
+<div class="row g-2 row-cols-1 row-cols-lg-4 align-items-start justify-content-sm-center ">
+  <!-- play -->
+  <div class="feature p-4 m-1 col border rounded-5 bg-info-subtle shadow-lg">
+      <a class="btn btn-primary text-center"  href="{% url 'der_die_das:game' %}" >
+        <i class="bi bi-boxes d-block mx-auto" style="font-size: 2rem;"></i>
+      </a>
+    <h3 class="fs-3 text-body-emphasis">Play and Practice</h3>
+    <p>Test yourself by selecting a proficiency level and guessing the correct articles.
+    </p>
+  </div>
+  <!-- History -->
+  <div class="feature p-4 m-1 col border rounded-5 bg-info-subtle shadow-lg">
+      <a class="btn btn-primary text-center"  href="{% url 'der_die_das:history'%}" >
+        <i class="bi-alarm d-block mx-auto" style="font-size: 2rem;"></i>
+      </a>
+    <h3 class="fs-3 text-body-emphasis">Track Your Progress</h3>
+    <p>Registered users can track their performance and see which words they got wrong.</p>
+  </div>
+  <!-- icon -->
+  <div class="feature p-4 m-1 col border rounded-5 bg-info text-center align-self-center shadow-lg">
+    <a class="navbar-brand  " href="{% url 'home:index' %}">
+      <img  src="{% static 'DerDieDasWhite.svg' %}"  alt="" width="190" height="190" >
+    </a>
+  </div>
+  <!-- search  -->
+  <div class="feature p-4 m-1 col border rounded-5 bg-info-subtle shadow-lg">
+    <div class="btn btn-primary text-center">
+      <i class="bi bi-search d-block mx-auto mb-1" style="font-size: 2rem;"></i>
+    </div>
+    <h3 class="fs-3 text-body-emphasis">Search for a Word</h3>
+    <p>Look up any German noun on the navigation bar on top and instantly find its correct article.</p>
+  </div>
+  <!-- Word list -->
+  <div class="feature p-4 m-1 col border rounded-5  bg-info-subtle shadow-lg">
+      <a class="btn btn-primary text-center" href="{% url 'der_die_das:entryList' %}">
+        <i class="bi-bar-chart-line d-block mx-auto mb-1" style="font-size: 2rem;"></i>
+      </a>
+    <h3 class="fs-3 text-body-emphasis">Word Lists</h3>
+    <p>	Explore multiple words at once based on different filters:</p>
+      <ul>
+      <li>Proficiency Level: A1 (Beginner), A2 (Elementary), or B1 (Intermediate).</li> 
+      <li> Word Frequency: Learn the most commonly used words first. </li>
+      <li>Text-Based Search: Find words from a specific text.</li>
+      </ul>
+  </div>
+  <!-- about -->
+  <div class="feature p-4 m-1 col border rounded-5  bg-info-subtle shadow-lg">
+    <div class="btn btn-primary text-center">
+      <i class="bi bi-info-circle-fill d-block mx-auto mb-1" style="font-size: 2rem;"></i>
+    </div>
+    <h3 class="fs-3 text-body-emphasis">About This Project</h3>
+    <p class>I love coding with Python, and recently, I took an amazing course on the <a href="https://www.dj4e.com/" target="_blank">  Django web framework </a>  by Charles Severance. At the same time, I'm learning German!  
+      This project brings both passions together. This website was built entirely with the python framework Django, with some JavaScript, and HTML (Bootstrap-based).</p>
+      
+      <p>The data for German nouns, articles, word frequency, and proficiency levels comes from  <a href="https://www.dwds.de/" target="_blank"> DWDS - Digitales Wörterbuch der deutschen Sprache</a>, an online German dictionary and text corpus that I regularly use for my own language learning.</p>
+  </div>
+</div>
+
+ 
+{% endblock %}

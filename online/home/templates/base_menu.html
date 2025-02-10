@@ -1,0 +1,88 @@
+{% extends 'base_bootstrap.html' %}
+
+{% block navbar %}
+{% load static %}
+
+<nav class="navbar  navbar-expand-md  navbar-dark bg-primary ">
+    <a class="navbar-brand px-4" href="{% url 'home:index' %}">
+      <img src="{% static 'DerDieDasWhite.svg' %}" alt="" width="80" height="70" >
+    </a>
+    <!-- Toggle button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button> 
+    <!-- Collapsible wrapper -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-md-auto">
+        <!-- word lists -->
+        <li class="nav-item">
+          <a class="nav-link text-nowrap text-md-center" href="{% url 'der_die_das:entryList' %}" >
+            <i class="bi bi-bar-chart-line d-md-block" style="font-size: 2rem;"></i>
+            Word Lists</a>
+        </li>
+        <!-- play -->
+        <li class="nav-item">
+          <a class="nav-link text-nowrap text-md-center"  href="{% url 'der_die_das:game' %}" >
+            <i class="bi bi-boxes d-md-block" style="font-size: 2rem;"></i>
+            Play
+          </a>
+        </li>
+        <!-- history -->
+        <li class="nav-item">
+          <a class="nav-link text-nowrap text-md-center"  href="{% url 'der_die_das:history'%}" >
+            <i class="bi-alarm  d-md-block" style="font-size: 2rem;"></i>
+            History
+          </a>
+        </li>
+        <!-- auth -->
+        <!-- log out --> 
+        {% if user.is_authenticated %}
+        <!-- settings --> 
+        <li class="nav-item">
+          <a class="nav-link text-nowrap text-md-center"  href="{% url 'home:settings'%}" >
+            <i class="bi bi-gear-fill d-md-block" style="font-size: 2rem;"></i>
+            Settings
+          </a>
+        </li>
+        <li class="nav-item"> 
+          <form   action="{% url 'logout' %}?next={{request.path}}" method="post">
+            {% csrf_token %}
+            <button class="nav-link text-nowrap text-center" type="submit">
+              <strong>Hi {{user.username|title}} </strong>
+              <i class="bi bi-emoji-smile  d-md-block" style="font-size: 1rem;"></i>
+              Log Out
+            </button>
+          </form>
+        </li>
+
+       
+        <!-- log in -->
+        {% else %}
+        <li class="nav-item">
+          <form  action="{% url 'login' %}?next={{request.path}}" method="get">
+            {% csrf_token %}
+            <button class="nav-link text-nowrap text-center" type="submit">
+            <i class="bi bi-person-fill-lock d-block" style="font-size: 2rem;"></i>
+            <input type="hidden" name="clicked" value="clicked">
+              Log In
+            </button>
+          </form>
+        </li>
+        {% endif %}
+        <!-- check path -->
+        <!-- <li class="nav-item">
+          {{request.path}}
+        </li> -->
+ 
+      </ul>
+      <form   action="{% url 'der_die_das:lemmataSearch'%}">  
+        {{ search_form.search }}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button class="btn btn-danger  ms-2" type="submit" value="Submit">Search</button>
+      </form>
+  </div>
+
+</nav>
+{% endblock %}
+
+ 
