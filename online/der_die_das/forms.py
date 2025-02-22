@@ -69,7 +69,7 @@ class GameSetupForm(forms.Form):
         self.helper.layout =  Layout(
                     Div('level',
                             css_class="col"), 
-                    Submit('Change', 'Change', css_class='button white'),                  
+                    Submit('Reset', 'Reset', css_class='button white'),                  
                     )
  
 

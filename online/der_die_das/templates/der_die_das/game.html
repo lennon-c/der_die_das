@@ -16,6 +16,11 @@
         <i class="bi-alarm d-block" style="font-size: 1.25rem;"></i>
         History
     </a>
+    <a class="btn btn-outline-primary border-0 rounded-0 text-nowrap text-center" data-bs-toggle="collapse" href="#info_game" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <i class="bi bi-info-circle d-block" style="font-size: 1.25rem;"></i>
+        Info
+    </a>
+
 </div>
 
 <!-- title -->
@@ -29,6 +34,22 @@
     {% crispy form %}
     </div>
 </div>
+<div class="collapse" id="info_game">
+    <div class="col-md   shadow p-3 mb-2 mt-1 rounded-3 bg-warning-subtle">
+        <h3 class="mt-4"> Goal:</h3>
+        <p>Correctly identify the  article for <strong>100</strong> German words.</p>
+        
+        <h3 class="mt-4"> How to Play:</h3>
+        <ul>
+            <li>Select a level and start the game.</li>
+            <li>A <strong>random German noun</strong> will appear on the screen.</li>
+            <li>Choose the correct <strong> article</strong> (<em>der, die, das</em>) or <em>Plural</em> if the word is only used in the plural form.</li>
+            <li>If your answer is <strong>correct</strong>, the word is removed from your list.</li>
+            <li>If your answer is <strong>incorrect</strong>, the word will be <strong>added twice more</strong> to your list for extra practice.</li>
+            <li>Continue playing until the list is empty.</li>
+        </ul>
+    </div>
+</div>
 {% endblock %}
 {% block content %}
 
@@ -37,7 +58,14 @@
     <div class="col-sm-10 col-md-8 col-lg-6 ">
         <div class="row  bg-info-subtle py-5  rounded-top-5"> 
             <div class="col text-center">
+                {% if lemma %}
                 <h1 class="text-center">{{lemma}}</h1> 
+                {% else %}
+                <span class="text-center lead fs-2 text-primary">Congratulations!</span><br>
+                <span class="text-center fs-6 text-secondary ">You have finished the game</span><br>
+                <span class="text-center fs-6 text-secondary "><span class="badge text-bg-primary">{{request.session.score}}</span> correct words in <span class="badge text-bg-primary">{{request.session.rounds}}</span> trials</span><br><br>
+                <span class="text-center fs-6 text-secondary">Go to the <strong>Level</strong> menu to play again</span>
+                {% endif %}
             </div>
         </div>
         <div class="row bg-info-subtle pb-4 justify-content-center"> 
@@ -58,8 +86,9 @@
             <div class="col p-2 m-2"> 
                 {{request.session.message|safe}}  {{last_lemma}}
             </div>
-            <div class="col p-2 m-2 text-end" > 
-                {{request.session.score}} / {{request.session.rounds}}
+            <div class="col m-2 text-end" > 
+                {{request.session.score}} / {{request.session.rounds}} <br>
+                words left : {{request.session.lemmata|length|add:1}} 
             </div>
         </div>
     </div>

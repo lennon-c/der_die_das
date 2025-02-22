@@ -30,6 +30,7 @@ def random_lemmata(level, number_items=1):
         return LEMMATA_LEVELS[level].filter(id__in=choices)
 
 
+
 def lemmata_by_lemma_or_spelling(lemma_text): 
     # lemma__iexact
     """Return lemma objects by lemma text or spelling."""
@@ -216,6 +217,17 @@ def reset_game(request):
     request.session['message'] = ''
     request.session['last_lemma_id'] = None
     request.session['style'] = style_correct(True)
+    # if the user visits the game for the first time, or session expired, level will not be set
+    # then set default level to 1 (A1)
+    level_id = request.GET.get('level') if request.GET.get('level') else '1'
+    request.session['level_id'] = level_id  
+    request.session['level_label'] = LEVELS_MAP[level_id]
+
+    # select set of words
+    lemmata = list(LEMMATA_ID_LEVELS[int(level_id)])
+    # add some randomness
+    random.shuffle(lemmata)
+    request.session['lemmata'] = lemmata[:100]
 
 class Game(View):
     @timer
@@ -224,34 +236,35 @@ class Game(View):
         print('print SESSION:', request.session.items())
 
         # change of the level requested
-        if  request.GET.get('Change') == 'Change':
-            level_id = request.GET.get('level')
+        if  request.GET.get('Reset') == 'Reset':
             reset_game(request)
-        # otherwise retrieve level from session
         else:
-            level_id = request.session.get('level_id')
-            # if not in session, default to level A1
-            if level_id is None:
-                level_id = '1'  
+            # first time visiting the game
+            if not request.session.get('level_id'):
                 reset_game(request)
                 
-        request.session['level_id'] = level_id
-        request.session['level_label'] = LEVELS_MAP[level_id]
+        context = dict()        
+        if lemmata:=request.session['lemmata']:
+            lemma_id = lemmata.pop()
+            request.session["lemmata"] = lemmata
 
-        lemma = random_lemmata( int(level_id), number_items=1 ) 
-        lemma_articles = lemma.entry_set.values_list('genders__article', flat = True).distinct()
-        answers = dict()
-        for _ , article in GENDERS:
-            answers[article] = True if article in lemma_articles else False
-        
-        context = dict()
-        context['lemma'] = lemma
-        context['answers'] = answers
+            lemma = Lemma.objects.get(id=lemma_id)
+            lemma_articles = lemma.entry_set.values_list('genders__article', flat = True).distinct()
+            answers = dict()
+            for _ , article in GENDERS:
+                answers[article] = True if article in lemma_articles else False
+            context['answers'] = answers
+            request.session["lemma_id"] = lemma.id
+
+        # game over
+        else:
+            lemma = None
+
         if last_lemma := request.session.get('last_lemma_id'):
             last_lemma =  Lemma.objects.get(id=last_lemma)
             context['last_lemma'] = f'{last_lemma.articles_text} {last_lemma}'
-        request.session["lemma_id"] = lemma.id
-
+            
+        context['lemma'] = lemma
         form = GameSetupForm({'level':request.session['level_id']})
         context['form'] = form
 
@@ -275,6 +288,14 @@ class Game(View):
         # message to be used in next get
         request.session['message'] = '&#9734;' if correct else '&#10008;' # ☆ &#9734; ✘ &#10008;
         request.session['style'] = style_correct(correct)
+
+        # update lemmata list, if wrong insert at random position 
+        lemmata = request.session.get('lemmata')
+        if not correct:
+            lemmata = lemmata + [last_lemma_id]*2 
+            random.shuffle(lemmata)
+        
+        request.session['lemmata'] = lemmata
         
         # save round to database
         if request.user.is_authenticated:
