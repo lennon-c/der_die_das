@@ -215,7 +215,7 @@ def reset_game(request):
     lemmata = list(LEMMATA_ID_LEVELS[int(level_id)])
     # add some randomness
     random.shuffle(lemmata)
-    request.session['lemmata'] = lemmata[:5]
+    request.session['lemmata'] = lemmata[:100]
 
 class Game(View):
     @timer
