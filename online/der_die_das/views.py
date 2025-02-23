@@ -18,18 +18,6 @@ from .constants import ALL_ENTRIES, GENDERS, LEMMATA_LEVELS, LEMMATA_ID_LEVELS, 
 
 import random
 
- 
-@timer
-def random_lemmata(level, number_items=1):
-    if number_items == 1:
-        index = random.randint(0, LEMMATA_LEN_LEVELS[level] - 1)
-        id = LEMMATA_ID_LEVELS[level][index]
-        return LEMMATA_LEVELS[level].get(id=id)
-    else: # not used so far
-        choices = random.choices(LEMMATA_ID_LEVELS.get(level),k=number_items) 
-        return LEMMATA_LEVELS[level].filter(id__in=choices)
-
-
 
 def lemmata_by_lemma_or_spelling(lemma_text): 
     # lemma__iexact
@@ -227,7 +215,7 @@ def reset_game(request):
     lemmata = list(LEMMATA_ID_LEVELS[int(level_id)])
     # add some randomness
     random.shuffle(lemmata)
-    request.session['lemmata'] = lemmata[:100]
+    request.session['lemmata'] = lemmata[:5]
 
 class Game(View):
     @timer
@@ -235,19 +223,20 @@ class Game(View):
         print('print REQUEST.GET:', list(request.GET.items()))
         print('print SESSION:', request.session.items())
 
-        # change of the level requested
+        # change of the level/reset requested
         if  request.GET.get('Reset') == 'Reset':
             reset_game(request)
+            print('New Game')
+            return redirect(reverse('der_die_das:game'))
         else:
             # first time visiting the game
             if not request.session.get('level_id'):
+                print('First time visiting the game')
                 reset_game(request)
                 
         context = dict()        
         if lemmata:=request.session['lemmata']:
-            lemma_id = lemmata.pop()
-            request.session["lemmata"] = lemmata
-
+            lemma_id = lemmata[0]
             lemma = Lemma.objects.get(id=lemma_id)
             lemma_articles = lemma.entry_set.values_list('genders__article', flat = True).distinct()
             answers = dict()
@@ -291,8 +280,10 @@ class Game(View):
 
         # update lemmata list, if wrong insert at random position 
         lemmata = request.session.get('lemmata')
+        if correct:
+            lemmata = lemmata[1:]
         if not correct:
-            lemmata = lemmata + [last_lemma_id]*2 
+            lemmata = lemmata + [last_lemma_id] 
             random.shuffle(lemmata)
         
         request.session['lemmata'] = lemmata
