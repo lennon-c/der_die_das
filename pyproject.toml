@@ -17,6 +17,7 @@ crispy-bootstrap5 = "^2024.10"
 django-tables2 = "^2.7.5"
 mysqlclient = "^2.2.7"
 python-decouple = "^3.8"
+matplotlib = "^3.10.1"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
